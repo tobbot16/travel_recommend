@@ -1,8 +1,7 @@
 package org.zerock.apiserver.util;
 
-
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -15,15 +14,18 @@ import java.util.List;
 @Component
 public class TourApiClient {
 
+    // ✅ 환경변수에서 주입받은 API 키
+    @Value("${tourapi.key}")
+    private String serviceKey;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String serviceKey = "5MZSCGSzc6BJvGzjE7vDLdgkZH3BdQsV1gE83A0HjC4W7c8nJRwsw1vQVSEAlqZ46jnlax0CBtF65OgkVSg9Sg==";
+    // ✅ 기본 API 요청 URL
     private final String baseUrl = "https://apis.data.go.kr/B551011/KorService2/areaBasedList2";
 
     public List<TourApiResponseDTO.Item> getPlaces(int areaCode, int contentTypeId, int numOfRows) {
-
         String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .queryParam("serviceKey", serviceKey)
+                .queryParam("serviceKey", serviceKey) // 🔄 외부 환경변수에서 주입된 값 사용
                 .queryParam("MobileOS", "ETC")
                 .queryParam("MobileApp", "AppTest")
                 .queryParam("_type", "json")
@@ -56,5 +58,3 @@ public class TourApiClient {
         return Collections.emptyList();
     }
 }
-
-
